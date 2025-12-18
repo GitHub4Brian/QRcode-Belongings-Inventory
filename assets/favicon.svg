@@ -1,0 +1,13 @@
+<svg width="64px" height="64px" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <style>
+            .favicon-base { fill: #00A896; } /* Solid Teal Color */
+            .favicon-check { fill: #FFFFFF; } /* White Checkmark */
+        </style>
+    </defs>
+    <g id="Favicon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Container" class="favicon-base" x="0" y="0" width="64" height="64" rx="16"></rect>
+        
+        <path d="M26.6666667,44.3733333 L15.7866667,33.4933333 C14.7466667,32.4533333 14.7466667,30.7733333 15.7866667,29.7333333 C16.8266667,28.6933333 18.5066667,28.6933333 19.5466667,29.7333333 L28.5333333,38.72 L44.4533333,22.8 C45.4933333,21.76 47.1733333,21.76 48.2133333,22.8 C49.2533333,23.84 49.2533333,25.52 48.2133333,26.56 L30.4266667,44.3733333 C29.3866667,45.4133333 27.7066667,45.4133333 26.6666667,44.3733333 Z" id="Checkmark" class="favicon-check" fill-rule="nonzero"></path>
+    </g>
+</svg>

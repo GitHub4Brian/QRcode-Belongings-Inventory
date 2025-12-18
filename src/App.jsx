@@ -1,5 +1,30 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import QRCode from 'qrcode';
+import bannerImage from '/assets/Banner2.png';
+
+// Theme configuration for consistent styling
+const theme = {
+  dark: {
+    bg: '#0a0f1a',
+    bgGradient: 'radial-gradient(ellipse at center, #0d2833 0%, #0a0f1a 100%)',
+    surface: 'rgba(15, 23, 42, 0.8)',
+    accent: '#00d4aa',
+    accentGlow: 'rgba(0, 212, 170, 0.3)',
+    accentDim: 'rgba(0, 212, 170, 0.6)',
+    text: '#e2e8f0',
+    textMuted: '#94a3b8',
+  },
+  light: {
+    bg: '#f0f4f7',
+    surface: '#ffffff',
+    accent: '#0d9488',
+    accentHover: '#0f766e',
+    border: '#e2e8f0',
+    borderAccent: 'rgba(0, 168, 150, 0.15)',
+    text: '#1e293b',
+    textMuted: '#64748b',
+  }
+};
 
 // Calculate byte size of text
 const getByteSize = (text) => new TextEncoder().encode(text).length;
@@ -15,58 +40,168 @@ const CATEGORIES = [
   { value: 'other', label: 'Other', icon: '📦' }
 ];
 
-// Onboarding Modal Component
+// Onboarding Modal Component - Dark futuristic design
 const OnboardingModal = ({ onAccept }) => {
   const [understood, setUnderstood] = useState(false);
   
   return (
     <div style={{
-      position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.6)',
-      backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center',
-      justifyContent: 'center', padding: '20px', zIndex: 1000
+      position: 'fixed', inset: 0, 
+      background: theme.dark.bgGradient,
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      justifyContent: 'center', padding: '20px', zIndex: 1000,
+      fontFamily: 'DM Sans, -apple-system, sans-serif',
+      overflow: 'hidden'
     }}>
+      {/* Glassmorphism Card with Banner inside */}
       <div style={{
-        background: 'white', borderRadius: '16px', padding: '24px',
-        maxWidth: '400px', width: '100%', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'
+        background: theme.dark.surface,
+        backdropFilter: 'blur(12px)',
+        borderRadius: '20px', padding: '0',
+        maxWidth: '460px', width: '100%',
+        border: `1px solid ${theme.dark.accentGlow}`,
+        boxShadow: `0 0 40px ${theme.dark.accentGlow}, inset 0 1px 0 rgba(255,255,255,0.05)`,
+        display: 'flex',
+        flexDirection: 'column'
       }}>
-        <div style={{ fontSize: '3rem', textAlign: 'center', marginBottom: '16px' }}>⚠️</div>
-        <h2 style={{ textAlign: 'center', marginBottom: '16px', fontFamily: 'DM Sans, sans-serif' }}>
-          Important: No Data Storage
-        </h2>
-        <div style={{ marginBottom: '20px', fontFamily: 'DM Sans, sans-serif' }}>
-          <p>This tool is designed for <strong>PHI safety</strong>. Please understand:</p>
-          <ul style={{ marginTop: '12px', paddingLeft: '24px' }}>
-            <li style={{ padding: '6px 0' }}>All information exists <strong>only in this browser tab</strong></li>
-            <li style={{ padding: '6px 0' }}>Closing or refreshing will <strong>permanently erase</strong> all data</li>
-            <li style={{ padding: '6px 0' }}>Generate and scan the QR code <strong>before closing</strong></li>
-            <li style={{ padding: '6px 0' }}>No patient information is stored on any server</li>
+        {/* Banner Hero Image inside card */}
+        <div style={{
+          width: '100%', 
+          background: 'linear-gradient(180deg, rgba(0,212,170,0.05) 0%, transparent 100%)',
+          padding: '20px 20px 16px 20px',
+          display: 'flex', 
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexShrink: 0,
+          boxSizing: 'border-box'
+        }}>
+          <img 
+            src={bannerImage} 
+            alt="QR Code Belongings Inventory" 
+            style={{
+              width: '100%',
+              maxWidth: '100%',
+              height: 'auto',
+              objectFit: 'contain', 
+              filter: 'drop-shadow(0 0 20px rgba(0, 212, 170, 0.3))',
+              display: 'block'
+            }}
+          />
+        </div>
+        
+        {/* Card content - centered */}
+        <div style={{ 
+          padding: '4px 32px 32px 32px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          flexShrink: 0
+        }}>
+          {/* Title with glow effect */}
+          <h2 style={{ 
+            textAlign: 'center', marginBottom: '20px', 
+            color: theme.dark.text, fontSize: '1.5rem', fontWeight: '700',
+            textShadow: `0 0 20px ${theme.dark.accentGlow}`,
+            width: '100%'
+          }}>
+            <span style={{ color: theme.dark.accent }}>PHI-Safe</span> Inventory Tool
+          </h2>
+        
+        <div style={{ 
+          marginBottom: '24px', 
+          color: theme.dark.textMuted, 
+          lineHeight: '1.6',
+          width: '100%',
+          textAlign: 'center'
+        }}>
+          <p style={{ marginBottom: '16px', color: theme.dark.text }}>
+            This tool is designed with <strong style={{ color: theme.dark.accent }}>zero data storage</strong>:
+          </p>
+          <ul style={{ paddingLeft: '0', listStyle: 'none', textAlign: 'left', maxWidth: '380px', margin: '0 auto' }}>
+            {[
+              'All information exists only in this browser tab',
+              'Closing or refreshing permanently erases all data',
+              'Generate and scan the QR code before closing'
+            ].map((text, i) => (
+              <li key={i} style={{ 
+                padding: '10px 0', display: 'flex', alignItems: 'flex-start', gap: '12px',
+                borderBottom: i < 2 ? `1px solid rgba(255,255,255,0.05)` : 'none'
+              }}>
+                <span style={{ 
+                  color: theme.dark.accent, fontSize: '1.1rem', marginTop: '2px',
+                  textShadow: `0 0 10px ${theme.dark.accent}`,
+                  flexShrink: 0
+                }}>✓</span>
+                <span style={{ color: theme.dark.text, fontSize: '0.9375rem' }}>{text}</span>
+              </li>
+            ))}
           </ul>
         </div>
+        
+        {/* Checkbox - centered */}
         <label style={{
-          display: 'flex', alignItems: 'center', gap: '10px',
-          marginBottom: '20px', cursor: 'pointer', fontFamily: 'DM Sans, sans-serif'
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px',
+          marginBottom: '20px', cursor: 'pointer', 
+          padding: '12px 16px', borderRadius: '12px',
+          background: understood ? 'rgba(0, 212, 170, 0.1)' : 'rgba(255,255,255,0.03)',
+          border: `1px solid ${understood ? theme.dark.accent : 'rgba(255,255,255,0.1)'}`,
+          transition: 'all 0.2s',
+          width: '100%',
+          maxWidth: '380px',
+          marginLeft: 'auto',
+          marginRight: 'auto'
         }}>
           <input 
             type="checkbox" 
             checked={understood} 
             onChange={(e) => setUnderstood(e.target.checked)}
-            style={{ width: '20px', height: '20px', accentColor: '#0d9488' }}
+            style={{ 
+              width: '22px', height: '22px', accentColor: theme.dark.accent,
+              cursor: 'pointer',
+              flexShrink: 0
+            }}
           />
-          <span>I understand this data is temporary</span>
+          <span style={{ color: theme.dark.text, fontSize: '0.9375rem', fontWeight: '500' }}>
+            I understand this data is temporary
+          </span>
         </label>
+        
+        {/* Glowing Continue Button - centered */}
         <button 
           disabled={!understood}
           onClick={onAccept}
           style={{
-            width: '100%', padding: '14px 24px', fontSize: '1rem', fontWeight: '600',
-            fontFamily: 'DM Sans, sans-serif', border: 'none', borderRadius: '12px',
-            background: understood ? 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)' : '#e2e8f0',
-            color: understood ? 'white' : '#94a3b8', cursor: understood ? 'pointer' : 'not-allowed'
+            width: '100%', 
+            maxWidth: '380px',
+            padding: '16px 24px', 
+            fontSize: '1.0625rem', 
+            fontWeight: '600',
+            border: 'none', 
+            borderRadius: '12px',
+            background: understood 
+              ? `linear-gradient(135deg, ${theme.dark.accent} 0%, #00a896 100%)` 
+              : 'rgba(255,255,255,0.1)',
+            color: understood ? '#0a0f1a' : theme.dark.textMuted,
+            cursor: understood ? 'pointer' : 'not-allowed',
+            boxShadow: understood 
+              ? `0 0 30px ${theme.dark.accentGlow}, 0 4px 15px rgba(0,0,0,0.3)` 
+              : 'none',
+            transition: 'all 0.3s',
+            flexShrink: 0
           }}
         >
-          Continue
+          {understood ? '→ Continue to App' : 'Please confirm above'}
         </button>
+        </div>
       </div>
+      
+      {/* Footer text */}
+      <p style={{ 
+        marginTop: '20px', color: theme.dark.textMuted, fontSize: '0.75rem',
+        textAlign: 'center', opacity: 0.7
+      }}>
+        Voice-to-inventory with QR export for EHR integration
+      </p>
     </div>
   );
 };
@@ -472,38 +607,59 @@ Remember: Return ONLY the JSON object, nothing else.`
   return (
     <div style={{
       minHeight: '100vh', display: 'flex', flexDirection: 'column',
-      maxWidth: '480px', margin: '0 auto', background: '#f0f4f7',
+      maxWidth: '480px', margin: '0 auto', background: theme.light.bg,
       fontFamily: 'DM Sans, -apple-system, sans-serif'
     }}>
-      {/* Header */}
+      {/* Dark Futuristic Header */}
       <header style={{
-        background: 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)',
+        background: 'linear-gradient(135deg, #0a1628 0%, #0d2033 100%)',
         color: 'white', padding: '16px 20px', display: 'flex',
         justifyContent: 'space-between', alignItems: 'center',
-        position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)'
+        position: 'sticky', top: 0, zIndex: 100,
+        boxShadow: `0 4px 20px rgba(0,0,0,0.3), 0 2px 0 ${theme.dark.accent}`,
+        borderBottom: `2px solid ${theme.dark.accent}`
       }}>
-        <h1 style={{ fontSize: '1.25rem', fontWeight: '700', letterSpacing: '-0.02em' }}>
-          Belongings Inventory
+        <h1 style={{ 
+          fontSize: '1.25rem', fontWeight: '700', letterSpacing: '-0.02em',
+          textShadow: `0 0 20px ${theme.dark.accentGlow}`
+        }}>
+          <span style={{ color: theme.dark.accent }}>QR</span> Belongings
         </h1>
         <div style={{
           display: 'flex', alignItems: 'center', gap: '6px',
-          background: 'rgba(255,255,255,0.15)', padding: '6px 12px',
-          borderRadius: '9999px', fontSize: '0.75rem', fontWeight: '500'
+          background: 'rgba(0, 212, 170, 0.1)', padding: '6px 12px',
+          borderRadius: '9999px', fontSize: '0.75rem', fontWeight: '500',
+          border: `1px solid ${theme.dark.accentGlow}`,
+          boxShadow: `0 0 10px ${theme.dark.accentGlow}`
         }}>
-          <span>🔒</span>
-          <span>Session Only</span>
+          <span style={{ 
+            animation: 'pulse 2s infinite',
+            display: 'inline-block'
+          }}>🔒</span>
+          <span style={{ color: theme.dark.accent }}>Session Only</span>
         </div>
       </header>
+      
+      {/* Gradient transition from dark header to light content */}
+      <div style={{
+        height: '20px',
+        background: 'linear-gradient(to bottom, #0d2033 0%, transparent 100%)',
+        marginBottom: '-10px'
+      }} />
 
       {/* Main Content */}
       <main style={{ flex: 1, padding: '20px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
         {/* Recording Section */}
         <section style={{
-          background: 'white', borderRadius: '16px', padding: '20px',
-          boxShadow: '0 1px 2px rgba(0,0,0,0.05)', border: '1px solid #e2e8f0'
+          background: theme.light.surface, borderRadius: '16px', padding: '20px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.04)', 
+          border: `1px solid ${theme.light.borderAccent}`,
+          transition: 'box-shadow 0.2s, border-color 0.2s'
         }}>
-          <h2 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '8px' }}>Record Items</h2>
-          <p style={{ fontSize: '0.875rem', color: '#64748b', marginBottom: '16px' }}>
+          <h2 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '8px', color: theme.light.text }}>
+            Record Items
+          </h2>
+          <p style={{ fontSize: '0.875rem', color: theme.light.textMuted, marginBottom: '16px' }}>
             Describe patient belongings aloud or type below
           </p>
           
@@ -556,10 +712,13 @@ Remember: Return ONLY the JSON object, nothing else.`
               width: '100%', padding: '14px 24px', fontSize: '1rem', fontWeight: '600',
               fontFamily: 'DM Sans, sans-serif', border: 'none', borderRadius: '12px',
               background: (isProcessing || (!transcription.trim() && !manualInput.trim())) 
-                ? '#e2e8f0' : 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)',
-              color: (isProcessing || (!transcription.trim() && !manualInput.trim())) ? '#94a3b8' : 'white',
+                ? theme.light.border : `linear-gradient(135deg, ${theme.light.accent} 0%, ${theme.light.accentHover} 100%)`,
+              color: (isProcessing || (!transcription.trim() && !manualInput.trim())) ? theme.light.textMuted : 'white',
               cursor: (isProcessing || (!transcription.trim() && !manualInput.trim())) ? 'not-allowed' : 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              boxShadow: (isProcessing || (!transcription.trim() && !manualInput.trim())) 
+                ? 'none' : '0 4px 14px rgba(13, 148, 136, 0.25)',
+              transition: 'all 0.2s'
             }}
           >
             {isProcessing ? (
@@ -594,22 +753,30 @@ Remember: Return ONLY the JSON object, nothing else.`
 
         {/* Inventory List Section */}
         <section style={{
-          background: 'white', borderRadius: '16px', padding: '20px',
-          boxShadow: '0 1px 2px rgba(0,0,0,0.05)', border: '1px solid #e2e8f0'
+          background: theme.light.surface, borderRadius: '16px', padding: '20px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.04)', 
+          border: `1px solid ${theme.light.borderAccent}`,
+          transition: 'box-shadow 0.2s'
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <h2 style={{ fontSize: '1.125rem', fontWeight: '600' }}>Inventory ({items.length} items)</h2>
+            <h2 style={{ fontSize: '1.125rem', fontWeight: '600', color: theme.light.text }}>
+              Inventory ({items.length} items)
+            </h2>
             <button onClick={() => setItems(prev => [...prev, { title: 'New Item', category: 'other', description: 'Enter description' }])}
               style={{
-                padding: '8px 16px', fontSize: '0.875rem', border: '1px solid #e2e8f0',
-                borderRadius: '8px', background: 'white', cursor: 'pointer', fontFamily: 'DM Sans, sans-serif'
+                padding: '8px 16px', fontSize: '0.875rem', 
+                border: `1px solid ${theme.light.borderAccent}`,
+                borderRadius: '8px', background: theme.light.surface, 
+                cursor: 'pointer', fontFamily: 'DM Sans, sans-serif',
+                color: theme.light.accent, fontWeight: '500',
+                transition: 'all 0.2s'
               }}>+ Add Item</button>
           </div>
 
           {items.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '32px 16px', color: '#64748b' }}>
+            <div style={{ textAlign: 'center', padding: '32px 16px', color: theme.light.textMuted }}>
               <div style={{ fontSize: '3rem', marginBottom: '12px', opacity: 0.5 }}>📋</div>
-              <p style={{ fontWeight: '500', color: '#1e293b', marginBottom: '4px' }}>No items yet</p>
+              <p style={{ fontWeight: '500', color: theme.light.text, marginBottom: '4px' }}>No items yet</p>
               <span style={{ fontSize: '0.875rem' }}>Record or type belongings above, then process with AI</span>
             </div>
           ) : (
@@ -628,10 +795,14 @@ Remember: Return ONLY the JSON object, nothing else.`
         {/* QR Export Section */}
         {items.length > 0 && (
           <section style={{
-            background: 'white', borderRadius: '16px', padding: '20px',
-            boxShadow: '0 1px 2px rgba(0,0,0,0.05)', border: '1px solid #e2e8f0'
+            background: theme.light.surface, borderRadius: '16px', padding: '20px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)', 
+            border: `1px solid ${theme.light.borderAccent}`,
+            transition: 'box-shadow 0.2s'
           }}>
-            <h2 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '16px' }}>Export to EHR</h2>
+            <h2 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '16px', color: theme.light.text }}>
+              Export to EHR
+            </h2>
             
             <SizeIndicator currentBytes={currentBytes} maxBytes={2000} />
             
@@ -651,10 +822,14 @@ Remember: Return ONLY the JSON object, nothing else.`
               style={{
                 width: '100%', padding: '16px 32px', fontSize: '1.0625rem', fontWeight: '600',
                 fontFamily: 'DM Sans, sans-serif', border: 'none', borderRadius: '12px',
-                background: canGenerateQR ? 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)' : '#e2e8f0',
-                color: canGenerateQR ? 'white' : '#94a3b8',
+                background: canGenerateQR 
+                  ? `linear-gradient(135deg, ${theme.light.accent} 0%, ${theme.light.accentHover} 100%)` 
+                  : theme.light.border,
+                color: canGenerateQR ? 'white' : theme.light.textMuted,
                 cursor: canGenerateQR ? 'pointer' : 'not-allowed',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '16px'
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '16px',
+                boxShadow: canGenerateQR ? '0 4px 14px rgba(13, 148, 136, 0.25)' : 'none',
+                transition: 'all 0.2s'
               }}
             >
               <svg viewBox="0 0 24 24" fill="currentColor" style={{ width: '20px', height: '20px' }}>
@@ -670,53 +845,75 @@ Remember: Return ONLY the JSON object, nothing else.`
       {showQR && (
         <div onClick={() => setShowQR(false)} style={{
           position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.6)',
-          backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center',
-          justifyContent: 'center', padding: '20px', zIndex: 1000
+          backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'flex-start',
+          justifyContent: 'center', padding: '20px', zIndex: 1000,
+          overflowY: 'auto'
         }}>
           <div onClick={(e) => e.stopPropagation()} style={{
             background: 'white', borderRadius: '16px', padding: '24px',
-            maxWidth: '400px', width: '100%', maxHeight: '90vh', overflowY: 'auto',
-            boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'center'
+            maxWidth: '400px', width: '100%',
+            boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'center',
+            margin: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            maxHeight: 'calc(100vh - 40px)'
           }}>
-            <h2 style={{ marginBottom: '8px', fontFamily: 'DM Sans, sans-serif' }}>Scan with EHR Scanner</h2>
-            <p style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '20px', fontFamily: 'DM Sans, sans-serif' }}>
-              Position the QR code for your Cerner or Epic scanner
-            </p>
-            
+            {/* Scrollable content area */}
             <div style={{
-              background: 'white', padding: '16px', borderRadius: '12px',
-              display: 'inline-block', marginBottom: '20px', border: '1px solid #e2e8f0'
+              overflowY: 'auto',
+              flex: '1 1 auto',
+              minHeight: 0
             }}>
-              {qrCodeDataUrl ? (
-                <img src={qrCodeDataUrl} alt="Inventory QR Code"
-                  style={{ display: 'block', width: '280px', height: '280px' }}
-                />
-              ) : (
-                <div style={{ 
-                  width: '280px', height: '280px', display: 'flex', 
-                  alignItems: 'center', justifyContent: 'center',
-                  color: '#64748b', fontSize: '0.875rem'
-                }}>
-                  Generating QR code...
-                </div>
-              )}
+              <h2 style={{ marginBottom: '8px', fontFamily: 'DM Sans, sans-serif' }}>Scan with EHR Scanner</h2>
+              <p style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '20px', fontFamily: 'DM Sans, sans-serif' }}>
+                Position the QR code for your Cerner or Epic scanner
+              </p>
+              
+              <div style={{
+                background: 'white', padding: '16px', borderRadius: '12px',
+                display: 'inline-block', marginBottom: '20px', border: '1px solid #e2e8f0'
+              }}>
+                {qrCodeDataUrl ? (
+                  <img src={qrCodeDataUrl} alt="Inventory QR Code"
+                    style={{ display: 'block', width: '280px', height: '280px' }}
+                  />
+                ) : (
+                  <div style={{ 
+                    width: '280px', height: '280px', display: 'flex', 
+                    alignItems: 'center', justifyContent: 'center',
+                    color: '#64748b', fontSize: '0.875rem'
+                  }}>
+                    Generating QR code...
+                  </div>
+                )}
+              </div>
+              
+              <div style={{
+                textAlign: 'left', background: '#f0f4f7', borderRadius: '12px',
+                padding: '12px', marginBottom: '20px',
+                maxHeight: '300px',
+                overflowY: 'auto'
+              }}>
+                <h3 style={{
+                  fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em',
+                  color: '#64748b', marginBottom: '8px', fontFamily: 'DM Sans, sans-serif'
+                }}>Preview:</h3>
+                <pre style={{
+                  fontFamily: 'JetBrains Mono, monospace', fontSize: '0.75rem',
+                  whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: '#1e293b',
+                  margin: 0
+                }}>{inventoryText}</pre>
+              </div>
             </div>
             
-            <div style={{
-              textAlign: 'left', background: '#f0f4f7', borderRadius: '12px',
-              padding: '12px', marginBottom: '20px', maxHeight: '200px', overflowY: 'auto'
+            {/* Fixed buttons at bottom */}
+            <div style={{ 
+              display: 'flex', 
+              gap: '12px', 
+              width: '100%',
+              flexShrink: 0,
+              marginTop: '20px'
             }}>
-              <h3 style={{
-                fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em',
-                color: '#64748b', marginBottom: '8px', fontFamily: 'DM Sans, sans-serif'
-              }}>Preview:</h3>
-              <pre style={{
-                fontFamily: 'JetBrains Mono, monospace', fontSize: '0.75rem',
-                whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: '#1e293b'
-              }}>{inventoryText}</pre>
-            </div>
-            
-            <div style={{ display: 'flex', gap: '12px', width: '100%' }}>
               <button 
                 onClick={() => {
                   navigator.clipboard.writeText(inventoryText).then(() => {
@@ -745,12 +942,20 @@ Remember: Return ONLY the JSON object, nothing else.`
       {/* Footer */}
       <footer style={{
         textAlign: 'center', padding: '16px 20px', fontSize: '0.75rem',
-        color: '#64748b', borderTop: '1px solid #e2e8f0', background: 'white'
+        color: theme.light.textMuted, 
+        borderTop: `1px solid ${theme.light.borderAccent}`, 
+        background: theme.light.surface
       }}>
-        Data exists only in this session • No information is stored
+        <span style={{ color: theme.light.accent }}>●</span> Data exists only in this session • No information is stored
       </footer>
       
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 
+          0%, 100% { opacity: 1; } 
+          50% { opacity: 0.5; } 
+        }
+      `}</style>
     </div>
   );
 }
